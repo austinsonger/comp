@@ -1,0 +1,26 @@
+model Organization {
+  id        String   @id @default(dbgenerated("generate_prefixed_cuid('org'::text)"))
+  name      String
+  slug      String   @unique
+  logo      String?
+  createdAt DateTime
+  metadata  String?
+  stripeCustomerId String?
+
+  apiKeys            ApiKey[]
+  artifacts          Artifact[]
+  auditLog           AuditLog[]
+  controls           Control[]
+  evidence           Evidence[]
+  frameworkInstances FrameworkInstance[]
+  integrations       Integration[]
+  invitations        Invitation[]
+  members            Member[]
+  policy             Policy[]
+  risk               Risk[]
+  vendors            Vendor[]
+  tasks              Task[]
+  comments           Comment[]
+
+  @@index([slug])
+}

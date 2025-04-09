@@ -1,0 +1,34 @@
+model Policy {
+  id               String       @id @default(dbgenerated("generate_prefixed_cuid('pol'::text)"))
+  name             String
+  description      String?
+  status           PolicyStatus @default(draft)
+  content          Json[]
+  frequency        Frequency?
+  department       Departments?
+  isRequiredToSign Boolean      @default(false)
+  signedBy         String[]     @default([])
+  reviewDate       DateTime?
+  isArchived       Boolean      @default(false)
+
+  // Dates
+  createdAt       DateTime  @default(now())
+  updatedAt       DateTime  @updatedAt
+  lastArchivedAt  DateTime?
+  lastPublishedAt DateTime?
+
+  // Relationships
+  organizationId String
+  organization   Organization @relation(fields: [organizationId], references: [id], onDelete: Cascade)
+  assigneeId     String?
+  assignee       Member?      @relation(fields: [assigneeId], references: [id])
+  artifacts      Artifact[]
+
+  @@index([organizationId])
+}
+
+enum PolicyStatus {
+  draft
+  published
+  needs_review
+}

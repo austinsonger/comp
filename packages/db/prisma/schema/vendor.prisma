@@ -1,0 +1,54 @@
+model Vendor {
+  id                  String          @id @default(dbgenerated("generate_prefixed_cuid('vnd'::text)"))
+  name                String
+  description         String
+  category            VendorCategory  @default(other)
+  status              VendorStatus    @default(not_assessed)
+  inherentProbability Likelihood      @default(very_unlikely)
+  inherentImpact      Impact          @default(insignificant)
+  residualProbability Likelihood      @default(very_unlikely)
+  residualImpact      Impact          @default(insignificant)
+  contacts            VendorContact[]
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  organizationId String
+  organization   Organization @relation(fields: [organizationId], references: [id], onDelete: Cascade)
+  assigneeId     String?
+  assignee       Member?      @relation(fields: [assigneeId], references: [id], onDelete: Cascade)
+
+  @@index([organizationId])
+  @@index([assigneeId])
+  @@index([category])
+}
+
+model VendorContact {
+  id        String   @id @default(dbgenerated("generate_prefixed_cuid('vct'::text)"))
+  vendorId  String
+  name      String
+  email     String
+  phone     String
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  Vendor    Vendor   @relation(fields: [vendorId], references: [id])
+
+  @@index([vendorId])
+}
+
+enum VendorCategory {
+  cloud
+  infrastructure
+  software_as_a_service
+  finance
+  marketing
+  sales
+  hr
+  other
+}
+
+enum VendorStatus {
+  not_assessed
+  in_progress
+  assessed
+}

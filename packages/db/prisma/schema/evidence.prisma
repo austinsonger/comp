@@ -1,0 +1,33 @@
+model Evidence {
+  // Metadata
+  id             String          @id @default(dbgenerated("generate_prefixed_cuid('evd'::text)"))
+  name           String
+  description    String
+  published      Boolean         @default(false)
+  isNotRelevant  Boolean         @default(false)
+  additionalUrls String[]
+  fileUrls       String[]
+  frequency      Frequency?
+  department     Departments     @default(none)
+  status         EvidenceStatus? @default(draft)
+
+  // Dates
+  createdAt       DateTime  @default(now())
+  updatedAt       DateTime  @updatedAt
+  lastPublishedAt DateTime?
+
+  // Relationships
+  assigneeId     String?
+  assignee       Member?      @relation(fields: [assigneeId], references: [id])
+  organizationId String
+  organization   Organization @relation(fields: [organizationId], references: [id], onDelete: Cascade)
+  artifacts      Artifact[]
+
+  @@index([organizationId])
+}
+
+enum EvidenceStatus {
+  draft
+  published
+  not_relevant
+}

@@ -1,0 +1,25 @@
+model Artifact {
+  // Metadata
+  id   String       @id @default(dbgenerated("generate_prefixed_cuid('art'::text)"))
+  type ArtifactType
+
+  // Timestamps
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  // Relations
+  controls       Control[]
+  organizationId String
+  organization   Organization @relation(fields: [organizationId], references: [id], onDelete: Cascade)
+  evidenceId     String?
+  evidence       Evidence?    @relation(fields: [evidenceId], references: [id], onDelete: Cascade)
+  policyId       String?
+  policy         Policy?      @relation(fields: [policyId], references: [id], onDelete: Cascade)
+}
+
+enum ArtifactType {
+  policy
+  evidence
+  procedure
+  training
+}

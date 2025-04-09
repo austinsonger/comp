@@ -1,0 +1,19 @@
+---
+description: 
+globs: *.prisma
+alwaysApply: false
+---
+In the database schemas (prisma .schema files) we always want to use custom ID's using `generate_prefixed_cuid` such as
+
+model User {
+ id          String @id @default(dbgenerated("generate_prefixed_cuid('ctl'::text)"))
+}
+
+Rules
+- Params must include ::text
+- Function calls must be within dbgenerated()
+
+This will generate a user readable ID such as `usr_BJRIZLgRPuWt8MvMjkSY82f1u3580YSW` 
+
+We should aim for short but unique prefixes, usually 2-3 characters.
+

@@ -1,0 +1,35 @@
+{
+	"name": "@comp/email",
+	"version": "1.0.0",
+	"private": true,
+	"main": "./dist/index.js",
+	"module": "./dist/index.mjs",
+	"types": "./dist/index.d.ts",
+	"files": ["dist/**"],
+	"scripts": {
+		"build": "tsup index.ts --format cjs,esm --dts",
+		"dev": "tsup index.ts --format cjs,esm --watch --dts",
+		"clean": "rm -rf .turbo node_modules dist",
+		"lint": "biome check .",
+		"format": "biome format --write .",
+		"typecheck": "tsc --noEmit"
+	},
+	"dependencies": {
+		"@comp/ui": "workspace:*",
+		"@comp/utils": "workspace:*",
+		"@react-email/components": "0.0.31",
+		"@react-email/render": "0.0.10",
+		"@react-email/tailwind": "1.0.4",
+		"date-fns": "^4.1.0",
+		"react-email": "3.0.4",
+		"responsive-react-email": "^0.0.5",
+		"react": "^19.1.0",
+		"react-dom": "^19.1.0"
+	},
+	"devDependencies": {
+		"typescript": "^5.7.2",
+		"@types/react": "^19.1.0",
+		"@types/react-dom": "^19.1.1",
+		"tsup": "^8.4.0"
+	}
+}

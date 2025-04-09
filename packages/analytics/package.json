@@ -1,0 +1,16 @@
+{
+	"name": "@comp/analytics",
+	"version": "1.0.0",
+	"private": true,
+	"main": "src/index.ts",
+	"scripts": {
+		"clean": "rm -rf .turbo node_modules",
+		"lint": "biome check .",
+		"format": "biome format --write .",
+		"typecheck": "tsc --noEmit"
+	},
+	"dependencies": {
+		"posthog-js": "^1.215.3",
+		"posthog-node": "^4.4.1"
+	}
+}

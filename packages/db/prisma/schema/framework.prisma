@@ -1,0 +1,17 @@
+model FrameworkInstance {
+  // Metadata
+  id             String      @id @default(dbgenerated("generate_prefixed_cuid('frm'::text)"))
+  organizationId String
+  frameworkId    FrameworkId
+
+  // Relationships
+  controls           Control[]
+  organization       Organization     @relation(fields: [organizationId], references: [id], onDelete: Cascade)
+  requirementsMapped RequirementMap[]
+
+  @@unique([organizationId, frameworkId])
+}
+
+enum FrameworkId {
+  soc2
+}

@@ -1,0 +1,111 @@
+model User {
+    id            String    @id @default(dbgenerated("generate_prefixed_cuid('usr'::text)"))
+    name          String
+    email         String
+    emailVerified Boolean
+    image         String?
+    createdAt     DateTime  @default(now())
+    updatedAt     DateTime  @updatedAt
+    lastLogin     DateTime?
+
+    accounts           Account[]
+    auditLog           AuditLog[]
+    integrationResults IntegrationResult[]
+    invitations        Invitation[]
+    members            Member[]
+    sessions           Session[]
+
+    @@unique([email])
+}
+
+model EmployeeTrainingVideoCompletion {
+    id          String    @id @default(dbgenerated("generate_prefixed_cuid('evc'::text)"))
+    completedAt DateTime?
+    videoId     String
+
+    memberId String
+    member   Member @relation(fields: [memberId], references: [id], onDelete: Cascade)
+
+    @@unique([memberId, videoId])
+    @@index([memberId])
+}
+
+model Session {
+    id                   String   @id @default(dbgenerated("generate_prefixed_cuid('ses'::text)"))
+    expiresAt            DateTime
+    token                String
+    createdAt            DateTime @default(now())
+    updatedAt            DateTime @updatedAt
+    ipAddress            String?
+    userAgent            String?
+    userId               String
+    activeOrganizationId String?
+    user                 User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+    @@unique([token])
+}
+
+model Account {
+    id                    String    @id @default(dbgenerated("generate_prefixed_cuid('acc'::text)"))
+    accountId             String
+    providerId            String
+    userId                String
+    user                  User      @relation(fields: [userId], references: [id], onDelete: Cascade)
+    accessToken           String?
+    refreshToken          String?
+    idToken               String?
+    accessTokenExpiresAt  DateTime?
+    refreshTokenExpiresAt DateTime?
+    scope                 String?
+    password              String?
+    createdAt             DateTime
+    updatedAt             DateTime
+}
+
+model Verification {
+    id         String   @id @default(dbgenerated("generate_prefixed_cuid('ver'::text)"))
+    identifier String
+    value      String
+    expiresAt  DateTime
+    createdAt  DateTime @default(now())
+    updatedAt  DateTime @updatedAt
+}
+
+model Member {
+    id             String       @id @default(dbgenerated("generate_prefixed_cuid('mem'::text)"))
+    organizationId String
+    organization   Organization @relation(fields: [organizationId], references: [id], onDelete: Cascade)
+    userId         String
+    user           User         @relation(fields: [userId], references: [id], onDelete: Cascade)
+    role           Role
+    createdAt      DateTime     @default(now())
+
+    department                      Departments                       @default(none)
+    isActive                        Boolean                           @default(true)
+    EmployeeTrainingVideoCompletion EmployeeTrainingVideoCompletion[]
+    Evidence                        Evidence[]
+    Policy                          Policy[]
+    Risk                            Risk[]
+    Task                            Task[]
+    Vendor                          Vendor[]
+    comments                        Comment[]
+}
+
+model Invitation {
+    id             String       @id @default(dbgenerated("generate_prefixed_cuid('inv'::text)"))
+    organizationId String
+    organization   Organization @relation(fields: [organizationId], references: [id], onDelete: Cascade)
+    email          String
+    role           Role?
+    status         String
+    expiresAt      DateTime
+    inviterId      String
+    user           User         @relation(fields: [inviterId], references: [id], onDelete: Cascade)
+}
+
+enum Role {
+    owner
+    admin
+    auditor
+    employee
+}

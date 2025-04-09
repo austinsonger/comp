@@ -1,0 +1,56 @@
+model Risk {
+  // Metadata
+  id                           String            @id @default(dbgenerated("generate_prefixed_cuid('rsk'::text)"))
+  title                        String
+  description                  String
+  category                     RiskCategory
+  department                   Departments?
+  status                       RiskStatus        @default(open)
+  likelihood                   Likelihood        @default(very_unlikely)
+  impact                       Impact            @default(insignificant)
+  residualLikelihood           Likelihood        @default(very_unlikely)
+  residualImpact               Impact            @default(insignificant)
+  treatmentStrategyDescription String?
+  treatmentStrategy            RiskTreatmentType @default(accept)
+
+  // Dates
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  // Relationships
+  organizationId String
+  organization   Organization @relation(fields: [organizationId], references: [id], onDelete: Cascade)
+  assigneeId     String?
+  assignee       Member?      @relation(fields: [assigneeId], references: [id])
+
+  @@index([organizationId])
+  @@index([category])
+  @@index([status])
+}
+
+enum RiskTreatmentType {
+  accept
+  avoid
+  mitigate
+  transfer
+}
+
+enum RiskCategory {
+  customer
+  governance
+  operations
+  other
+  people
+  regulatory
+  reporting
+  resilience
+  technology
+  vendor_management
+}
+
+enum RiskStatus {
+  open
+  pending
+  closed
+  archived
+}

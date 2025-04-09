@@ -1,0 +1,14 @@
+model Comment {
+  id        String   @id @default(dbgenerated("generate_prefixed_cuid('cmt'::text)"))
+  content   String
+  entityId  String
+  createdAt DateTime @default(now())
+
+  // Relationships
+  authorId       String
+  author         Member       @relation(fields: [authorId], references: [id])
+  organizationId String
+  organization   Organization @relation(fields: [organizationId], references: [id], onDelete: Cascade)
+
+  @@index([entityId])
+}
